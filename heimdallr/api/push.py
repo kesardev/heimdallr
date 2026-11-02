@@ -19,7 +19,7 @@ async def send_push_by_form(
     msg_type: str = Form(default="text"),
     attach: str = Form(default="", description="base64 string, only support image"),
 ):
-    return await serve_channels_async(key, title, body, msg_type=msg_type, attach=attach)
+    return await serve_channels_async(key, title, body, msg_type=msg_type or "text", attach=attach)
 
 
 class PostRequest(BaseModel):
@@ -56,4 +56,4 @@ async def send_push(
 ):
     title = unquote_plus(title)
     body = unquote_plus(body)
-    return await serve_channels_async(key, title, body, msg_type=msg_type, attach=attach)
+    return await serve_channels_async(key, title, body, msg_type=msg_type or "text", attach=attach)

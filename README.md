@@ -38,6 +38,8 @@ Heimdallr 是一个非常轻量的通知网关，可以聚合各种推送渠道�
 - [Apprise](https://github.com/caronc/apprise)
 - [PushMe](https://push.i-i.me/)
 - [Quote0/MindReset](https://dot.mindreset.tech/docs/server/text_api)
+- [Synology Chat](https://kb.synology.com/en-uk/DSM/tutorial/configure_webhooks_for_DSM_notifications) [未测试]
+- 自定义 Webhook（可配置 URL / Header / Body 模板）
 
 > 如果有需要的通知方式，请提交 [issue](https://github.com/LeslieLeung/heimdallr/issues/new?assignees=LeslieLeung&labels=enhancement&template=feature_request.md&title=)
 
@@ -111,6 +113,8 @@ curl -X POST 'http://<HOST>/push' --data-raw '{
 > - [企业微信](https://developer.work.weixin.qq.com/document/path/90236#%E6%94%AF%E6%8C%81%E7%9A%84markdown%E8%AF%AD%E6%B3%95)
 > - [Discord](https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline)
 > - [Telegram](https://core.telegram.org/bots/api#markdownv2-style)
+>
+> Telegram 另支持 `msg_type=html`，按 HTML parse mode 发送。
 
 # 示例应用
 
@@ -118,6 +122,7 @@ curl -X POST 'http://<HOST>/push' --data-raw '{
 - [使用 Heimdallr 接收威联通推送](docs/example/QNAP.md)
 - [使用 Heimdallr 接收 GitHub star webhook](docs/example/GitHubStar.md)
 - [使用 Heimdallr 接收 RSS 推送](docs/example/Rsspush.md)
+- [使用 Heimdallr 接收 RouterHook 推送](docs/example/RouterHook.md)
 
 # 更新日志
 

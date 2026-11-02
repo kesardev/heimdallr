@@ -12,6 +12,7 @@ from heimdallr.config.definition import (
     SUFFIX_EMAIL_PASSWORD,
     SUFFIX_EMAIL_PORT,
     SUFFIX_EMAIL_SENDER,
+    SUFFIX_EMAIL_SSL,
     SUFFIX_EMAIL_STARTTLS,
     SUFFIX_EMAIL_TO,
     SUFFIX_EMAIL_USER,
@@ -47,6 +48,7 @@ class Email(Channel):
         self.sender: str = "Heimdallr"
         self.to: str = ""
         self.starttls: bool = False
+        self.ssl: bool = False
         self.smtp_object: Union[smtplib.SMTP, None] = None
         self._build_channel()
 
@@ -58,6 +60,7 @@ class Email(Channel):
         self.sender = get_config_str(self.get_name(), SUFFIX_EMAIL_SENDER, "Heimdallr")
         self.to = get_config_str(self.get_name(), SUFFIX_EMAIL_TO, "")
         self.starttls = get_config_str(self.get_name(), SUFFIX_EMAIL_STARTTLS, "False") == "True"
+        self.ssl = get_config_str(self.get_name(), SUFFIX_EMAIL_SSL, "False") == "True"
         if self.host == "" or self.user == "" or self.password == "" or self.to == "":
             raise ParamException("email host, user, password or to not set")
 
@@ -67,10 +70,18 @@ class Email(Channel):
         message.sender = self.sender
         message.user = self.user
         message.to = self.to
+        # 465 是 SMTPS 的默认端口，需要用 SMTP_SSL；其它端口按 STARTTLS 配置
+        use_ssl = self.ssl or (self.port == 465 and not self.starttls)
         try:
-            with closing(smtplib.SMTP(self.host, self.port)) as smtp_object:
-                if self.starttls:
+            if use_ssl:
+                smtp_client = smtplib.SMTP_SSL(self.host, self.port, timeout=30)
+            else:
+                smtp_client = smtplib.SMTP(self.host, self.port, timeout=30)
+            with closing(smtp_client) as smtp_object:
+                smtp_object.ehlo()
+                if self.starttls and not use_ssl:
                     smtp_object.starttls()
+                    smtp_object.ehlo()
                 smtp_object.login(self.user, self.password)
                 smtp_object.sendmail(self.user, self.to, message.render_message())
                 logger.debug(f"Email sent to {self.to}")

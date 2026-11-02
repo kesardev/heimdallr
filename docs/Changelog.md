@@ -1,4 +1,13 @@
 # 更新日志
+
+## Unreleased (fork)
+- 新增 RouterHook 回调解析器：`POST /webhook/routerhook/{key}`
+- 新增 Synology Chat、自定义 Webhook 两个通知渠道
+- Email 支持 SSL/SMTPS（465 端口），修复 `SMTPException: Connection unexpectedly closed`
+- Telegram 支持 `msg_type=html`
+- ntfy 支持 token 和 Basic Auth，用于受保护的 topic
+- Docker 构建改用 requirements.txt，支持 `PIP_INDEX_URL` 构建参数
+- Vercel 部署改用 requirements.txt（通过 .vercelignore 排除 pyproject）
 ## v2.0.14
 - 支持 Vercel 部署
 ## v2.0.13

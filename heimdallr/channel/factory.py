@@ -13,6 +13,7 @@ from heimdallr.channel.pushdeer import PushDeer, PushDeerMessage
 from heimdallr.channel.pushme import Pushme, PushmeMessage
 from heimdallr.channel.pushover import Pushover, PushoverMessage
 from heimdallr.channel.quote0 import Quote0, Quote0Message
+from heimdallr.channel.synology import SynologyChat, SynologyChatMessage
 from heimdallr.channel.telegram import Telegram, TelegramMessage
 from heimdallr.channel.wecom import (
     WecomApp,
@@ -20,6 +21,7 @@ from heimdallr.channel.wecom import (
     WecomWebhook,
     WecomWebhookMessage,
 )
+from heimdallr.channel.webhook import Webhook, WebhookMessage
 from heimdallr.config.config import get_config_str
 from heimdallr.config.definition import SUFFIX_TYPE
 from heimdallr.exception import ParamException
@@ -42,6 +44,8 @@ CHANNEL_DINGTALK_WEBHOOK = "dingtalk_webhook"
 CHANNEL_APPRISE = "apprise"
 CHANNEL_PUSHME = "pushme"
 CHANNEL_QUOTE0 = "quote0"
+CHANNEL_SYNOLOGY_CHAT = "synology_chat"
+CHANNEL_WEBHOOK = "webhook"
 
 
 def _get_channel_type_by_name(name: str) -> str:
@@ -89,6 +93,10 @@ def build_channel(name: str) -> Channel:
         return Pushme(name, channel_type)
     elif channel_type == CHANNEL_QUOTE0:
         return Quote0(name, channel_type)
+    elif channel_type == CHANNEL_SYNOLOGY_CHAT:
+        return SynologyChat(name, channel_type)
+    elif channel_type == CHANNEL_WEBHOOK:
+        return Webhook(name, channel_type)
     else:
         raise ParamException(f"Channel {name} type {channel_type} not supported.")
 
@@ -129,5 +137,9 @@ def build_message(name: str, title: str, body: str, **kwargs) -> Message:
         return PushmeMessage(title, body, **kwargs)
     elif channel_type == CHANNEL_QUOTE0:
         return Quote0Message(title, body, **kwargs)
+    elif channel_type == CHANNEL_SYNOLOGY_CHAT:
+        return SynologyChatMessage(title, body, **kwargs)
+    elif channel_type == CHANNEL_WEBHOOK:
+        return WebhookMessage(title, body, **kwargs)
     else:
         raise ParamException(f"Channel type {channel_type} not supported.")

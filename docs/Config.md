@@ -89,6 +89,8 @@ channel_4_WECOM_WEBHOOK_KEY=<YOUR_WECOM_WEBHOOK_KEY>
 | 飞书/Lark Webhook | lark_webhook                          |
 | 钉钉自定义机器人  | dingtalk_webhook                      |
 | Quote0/MindReset  | quote0                                |
+| Synology Chat     | synology_chat                         |
+| 自定义 Webhook    | webhook                               |
 
 
 #### 渠道配置后缀
@@ -113,12 +115,16 @@ channel_4_WECOM_WEBHOOK_KEY=<YOUR_WECOM_WEBHOOK_KEY>
 | `EMAIL_SENDER`          | Email     | Email 发件人名称                                                                                                                                                                     |
 | `EMAIL_TO`              | Email     | Email 收件人                                                                                                                                                                         |
 | `EMAIL_STARTTLS`        | Email     | Email 是否使用 TLS                                                                                                                                                                   |
+| `EMAIL_SSL`             | Email     | 使用 SSL（SMTPS）发送，465 端口用这个，与 STARTTLS 二选一 |
 | `DISCORD_WEBHOOK_ID`    | Discord   | Discord 的 Webhook ID，见 [Discord 文档](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)                                                                  |
 | `DISCORD_WEBHOOK_TOKEN` | Discord   | Discord 的 Webhook Token                                                                                                                                                             |
 | `TELEGRAM_TOKEN`        | Telegram  | Telegram 的 Token，见 [这里](https://github.com/pppscn/SmsForwarder/wiki/2.%E5%8F%91%E9%80%81%E9%80%9A%E9%81%93#tele%E6%9C%BA%E5%99%A8%E4%BA%BA%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91) |
 | `TELEGRAM_CHAT_ID`      | Telegram  | Telegram 的 Chat ID，见 [这里](https://github.com/pppscn/SmsForwarder/issues/319)                                                                                                    |
 | `NTFY_HOST`             | ntfy      | ntfy 的服务端地址                                                                                                                                                                    |
 | `NTFY_TOPIC`            | ntfy      | ntfy 的 topic，见 [这里](https://docs.ntfy.sh/)                                                                                                                                      |
+| `NTFY_TOKEN`            | ntfy      | 受保护 topic 的访问 token（Bearer） |
+| `NTFY_USERNAME`         | ntfy      | 受保护 topic 的 Basic Auth 用户名 |
+| `NTFY_PASSWORD`         | ntfy      | 受保护 topic 的 Basic Auth 密码 |
 | `LARK_HOST`             | 飞书/Lark | 飞书/Lark 的接口地址，默认可以留空。如果使用 Lark, 则为 https://open.larksuite.com/open-apis/bot/v2/hook/                                                                            |
 | `LARK_TOKEN`            | 飞书/Lark | 飞书/Lark 的 Token                                                                                                                                                                   |
 | `LARK_SECRET`           | 飞书/Lark | 飞书/Lark 的签名密钥                                                                                                                                                                 |
@@ -131,6 +137,12 @@ channel_4_WECOM_WEBHOOK_KEY=<YOUR_WECOM_WEBHOOK_KEY>
 | `QUOTE0_DEVICE_ID`      | Quote0    | Quote0 (MindReset) 的设备ID，见 [Quote0 API](https://dot.mindreset.tech/docs/server/text_api)                                                                                        |
 | `QUOTE0_API_KEY`        | Quote0    | Quote0 (MindReset) 的API密钥                                                                                                                                                         |
 | `QUOTE0_BASE_URL`       | Quote0    | Quote0 (MindReset) 的服务端地址，默认 https://dot.mindreset.tech
+| `SYNOLOGY_URL`          | Synology Chat | Synology Chat 的完整 webhook URL（含 token） |
+| `WEBHOOK_URL`           | 自定义 Webhook | 目标地址 |
+| `WEBHOOK_METHOD`        | 自定义 Webhook | 请求方法，支持 POST / PUT，默认 POST |
+| `WEBHOOK_CONTENT_TYPE`  | 自定义 Webhook | 请求 Content-Type，默认 application/json |
+| `WEBHOOK_HEADERS`       | 自定义 Webhook | 额外请求头，JSON 对象字符串 |
+| `WEBHOOK_BODY`          | 自定义 Webhook | 请求体模板，支持 {{title}} {{body}} {{msg_type}} {{jump_url}} |
 
 
 ## 腾讯云 Serverless 环境变量设置

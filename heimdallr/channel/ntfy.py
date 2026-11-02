@@ -5,7 +5,13 @@ import requests
 
 from heimdallr.channel.base import Channel, Message
 from heimdallr.config.config import get_config_str
-from heimdallr.config.definition import SUFFIX_NTFY_HOST, SUFFIX_NTFY_TOPIC
+from heimdallr.config.definition import (
+    SUFFIX_NTFY_HOST,
+    SUFFIX_NTFY_PASSWORD,
+    SUFFIX_NTFY_TOPIC,
+    SUFFIX_NTFY_TOKEN,
+    SUFFIX_NTFY_USERNAME,
+)
 from heimdallr.exception import ParamException
 
 logger = logging.getLogger(__name__)
@@ -32,11 +38,17 @@ class Ntfy(Channel):
         super().__init__(name, type)
         self.host: str = "https://ntfy.sh"
         self.topic: str
+        self.token: str = ""
+        self.username: str = ""
+        self.password: str = ""
         self._build_channel()
 
     def _build_channel(self) -> None:
         self.host = get_config_str(self.get_name(), SUFFIX_NTFY_HOST, self.host)
         self.topic = get_config_str(self.get_name(), SUFFIX_NTFY_TOPIC, "")
+        self.token = get_config_str(self.get_name(), SUFFIX_NTFY_TOKEN, "")
+        self.username = get_config_str(self.get_name(), SUFFIX_NTFY_USERNAME, "")
+        self.password = get_config_str(self.get_name(), SUFFIX_NTFY_PASSWORD, "")
         if not self.topic:
             raise ParamException("Ntfy topic is empty.")
 
@@ -45,7 +57,12 @@ class Ntfy(Channel):
             raise ParamException("Ntfy only supports NtfyMessage.")
         headers, content = message.render_message()
         url = f"{self.host}/{self.topic}"
-        rs = requests.post(url, headers=headers, data=content)
+        auth = None
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        elif self.username:
+            auth = (self.username, self.password)
+        rs = requests.post(url, headers=headers, data=content, auth=auth, timeout=30)
         if rs.status_code != 200:
             logger.error(f"Ntfy send failed: {rs.text}")
         return rs.status_code == 200, rs.text

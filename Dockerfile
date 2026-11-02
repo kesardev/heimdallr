@@ -3,11 +3,13 @@ WORKDIR /app
 
 RUN adduser --disabled-password --gecos '' appuser
 
-RUN pip install poetry && poetry config virtualenvs.create false
-
 # dependencies
-COPY pyproject.toml poetry.lock ./
-RUN poetry install --without dev
+# 用 pip 安装 requirements.txt 中已锁定的依赖；
+# 国内环境可用 --build-arg PIP_INDEX_URL=... 指向镜像源（默认官方 PyPI）。
+ARG PIP_INDEX_URL=https://pypi.org/simple
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir --index-url "$PIP_INDEX_URL" -r requirements.txt
 
 USER appuser
 COPY heimdallr ./heimdallr

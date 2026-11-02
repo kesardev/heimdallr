@@ -1,3 +1,17 @@
+# 关于这个 fork
+
+这是 [LeslieLeung/heimdallr](https://github.com/LeslieLeung/heimdallr) 的个人 fork，主要用于自己的部署环境。相对上游的改动：
+
+- 新增 RouterHook（koolshare / 梅林路由器插件）回调解析器：`POST /webhook/routerhook/{key}`
+- 新增 Synology Chat、自定义 Webhook 两个通知渠道
+- Telegram 支持 `msg_type=html`，ntfy 支持 token / Basic Auth
+- Email 支持 465 端口的 SMTP_SSL
+- 构建改用 requirements.txt，并提供 Docker Hub 的 GitHub Actions 工作流
+
+上游项目的说明见下方原文。
+
+---
+
 <h1>Heimdallr</h1>
 
 > 🔧该项目已经重构至新版本，API、配置项 等与原v1.x版本不兼容。若需要用旧版，请查看 [legacy 分支](https://github.com/LeslieLeung/heimdallr/tree/legacy) 。

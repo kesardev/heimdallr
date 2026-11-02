@@ -19,6 +19,8 @@ class TelegramMessage(Message):
     def render_message(self) -> Dict:
         if self.msg_type == "markdown":
             return {"parse_mode": "MarkdownV2", "text": f"{self.title}\n{self.body}"}
+        if self.msg_type == "html":
+            return {"parse_mode": "HTML", "text": f"{self.title}\n{self.body}"}
         return {"text": f"{self.title}\n{self.body}"}
 
 
@@ -43,7 +45,7 @@ class Telegram(Channel):
         # add chat id
         msg["chat_id"] = self.chat_id
         url = f"{self.base_url}{self.token}/sendMessage"
-        rs = requests.post(url, json=msg)
+        rs = requests.post(url, json=msg, timeout=30)
         if rs.status_code != 200:
             logger.error(f"Telegram send failed: {rs.text}")
         return rs.status_code == 200, rs.text

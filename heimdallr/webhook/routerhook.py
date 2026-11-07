@@ -64,7 +64,7 @@ class RouterHookWebhook(WebhookBase):
         if temp:
             unit = temp.get("unit", "°C")
             temps = []
-            for key, label in (("CPU", "CPU"), ("24G", "2.4G"), ("5G1", "5G1"), ("5G2", "5G2")):
+            for key, label in (("CPU", "CPU"), ("24G", "2.4G"), ("5G1", "5G"), ("5G2", "5G2")):
                 if _present(temp.get(key)):
                     temps.append(f"{label} {temp[key]}")
             if temps:

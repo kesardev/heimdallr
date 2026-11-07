@@ -16,6 +16,9 @@ def _present(value: Any) -> bool:
     return value not in (None, "", {}, [])
 
 
+_WIFI_LABEL = {"24G": "2.4G", "5G1": "5G", "5G2": "5G2", "SmartConnect": "SmartConnect"}
+
+
 class RouterHookWebhook(WebhookBase):
     """解析 RouterHook 插件推送的 JSON，只输出 payload 里实际存在的字段。"""
 
@@ -74,7 +77,7 @@ class RouterHookWebhook(WebhookBase):
         if _present(net.get("routerLANIP")):
             lines.append(f"LAN：{net['routerLANIP']}")
         wifi = net.get("wifiINFO") or {}
-        wifi_items = [f"{k} {v}" for k, v in wifi.items() if _present(v)]
+        wifi_items = [f"{_WIFI_LABEL.get(k, k)} {v}" for k, v in wifi.items() if _present(v)]
         if wifi_items:
             lines.append("WiFi：" + " · ".join(wifi_items))
         guest = net.get("guestINFO") or {}

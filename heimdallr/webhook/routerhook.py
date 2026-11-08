@@ -29,6 +29,8 @@ class RouterHookWebhook(WebhookBase):
             return self._parse_status(message)
         if msg_type == "ifUP":
             return self._parse_ifup(message)
+        if msg_type == "wifiJOIN":
+            return self._parse_wifi(message)
         if msg_type == "newDHCP":
             return self._parse_dhcp(message)
         return self._parse_unknown(message, msg_type)
@@ -151,6 +153,20 @@ class RouterHookWebhook(WebhookBase):
         for index, wan in enumerate(wans):
             lines.extend(cls._format_wan(wan, index, len(wans)))
         return "路由器重拨", cls._truncate("\n".join(lines)), ""
+
+    @classmethod
+    def _parse_wifi(cls, message: Dict[str, Any]) -> Tuple[str, str, str]:
+        lines = [f"设备：{_fmt(message.get('cliNAME'))}", f"IP：{_fmt(message.get('cliIP'))}"]
+        if _present(message.get("cliMAC")):
+            lines.append(f"MAC：{message['cliMAC']}")
+        band = _fmt(message.get("wifiBAND"), "")
+        ssid = _fmt(message.get("wifiSSID"), "")
+        if band or ssid:
+            lines.append("Wi-Fi：" + " ".join(x for x in (band, ssid) if x))
+        if _present(message.get("upTIME")):
+            lines.append(f"接入：{message['upTIME']}")
+        title = f"Wi-Fi 接入（{band}）" if band else "Wi-Fi 接入"
+        return title, cls._truncate("\n".join(lines)), ""
 
     @classmethod
     def _parse_dhcp(cls, message: Dict[str, Any]) -> Tuple[str, str, str]:

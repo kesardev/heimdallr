@@ -163,6 +163,9 @@ class RouterHookWebhook(WebhookBase):
         ssid = _fmt(message.get("wifiSSID"), "")
         if band or ssid:
             lines.append("Wi-Fi：" + " ".join(x for x in (band, ssid) if x))
+        ap = _fmt(message.get("apNAME"), "")
+        if ap:
+            lines.append(f"接入点：{ap}")
         if _present(message.get("upTIME")):
             lines.append(f"接入：{message['upTIME']}")
         title = f"Wi-Fi 接入（{band}）" if band else "Wi-Fi 接入"

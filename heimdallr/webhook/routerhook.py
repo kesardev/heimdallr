@@ -31,8 +31,12 @@ class RouterHookWebhook(WebhookBase):
             return self._parse_ifup(message)
         if msg_type == "wifiJOIN":
             return self._parse_wifi(message)
+        if msg_type == "wifiLEAVE":
+            return self._parse_wifi_leave(message)
         if msg_type == "newDHCP":
             return self._parse_dhcp(message)
+        if msg_type == "dhcpRENEW":
+            return self._parse_dhcp_renew(message)
         return self._parse_unknown(message, msg_type)
 
     @classmethod
@@ -170,6 +174,34 @@ class RouterHookWebhook(WebhookBase):
             lines.append(f"接入：{message['upTIME']}")
         title = f"Wi-Fi 接入（{band}）" if band else "Wi-Fi 接入"
         return title, cls._truncate("\n".join(lines)), ""
+
+    @classmethod
+    def _parse_wifi_leave(cls, message: Dict[str, Any]) -> Tuple[str, str, str]:
+        lines = [f"设备：{_fmt(message.get('cliNAME'))}", f"IP：{_fmt(message.get('cliIP'))}"]
+        if _present(message.get("cliMAC")):
+            lines.append(f"MAC：{message['cliMAC']}")
+        band = _fmt(message.get("wifiBAND"), "")
+        ssid = _fmt(message.get("wifiSSID"), "")
+        if band or ssid:
+            lines.append("Wi-Fi：" + " ".join(x for x in (band, ssid) if x))
+        ap = _fmt(message.get("apNAME"), "")
+        if ap:
+            lines.append(f"接入点：{ap}")
+        if _present(message.get("offTIME")):
+            lines.append(f"断开：{message['offTIME']}")
+        title = f"Wi-Fi 断开（{band}）" if band else "Wi-Fi 断开"
+        return title, cls._truncate("\n".join(lines)), ""
+
+    @classmethod
+    def _parse_dhcp_renew(cls, message: Dict[str, Any]) -> Tuple[str, str, str]:
+        lines = [f"设备：{_fmt(message.get('cliNAME'))}", f"IP：{_fmt(message.get('cliIP'))}"]
+        if _present(message.get("cliMAC")):
+            lines.append(f"MAC：{message['cliMAC']}")
+        if _present(message.get("upTIME")):
+            lines.append(f"续约：{message['upTIME']}")
+        if _present(message.get("expTIME")):
+            lines.append(f"租约到期：{message['expTIME']}")
+        return "DHCP 续约", cls._truncate("\n".join(lines)), ""
 
     @classmethod
     def _parse_dhcp(cls, message: Dict[str, Any]) -> Tuple[str, str, str]:
